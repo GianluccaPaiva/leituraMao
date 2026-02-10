@@ -22,7 +22,7 @@ letra_candidata = None
 contador_estabilidade = 0
 ultima_letra_confirmada = ""
 ultimo_tempo_backspace = 0  # Controla delay do backspace
-DELAY_BACKSPACE = 0.5  # Delay em segundos (permite fazer múltiplos com intervalo)
+DELAY_BACKSPACE = 1.0  # Delay em segundos (permite fazer múltiplos com intervalo)
 
 falador = Falador(libras.ref)
 
