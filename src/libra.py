@@ -21,6 +21,8 @@ cap = cv2.VideoCapture(0)
 letra_candidata = None
 contador_estabilidade = 0
 ultima_letra_confirmada = ""
+ultimo_tempo_backspace = 0  # Controla delay do backspace
+DELAY_BACKSPACE = 0.5  # Delay em segundos (permite fazer múltiplos com intervalo)
 
 falador = Falador(libras.ref)
 
@@ -66,10 +68,13 @@ while True:
                     if erro < 0.15:
                         contador_estabilidade += 1
                         if contador_estabilidade >= 20:
-                            # Para backspace, permite múltiplas vezes se sair e voltar da pose
-                            print("⌨️ COMANDO EXECUTADO: BACKSPACE")
-                            falador.processar_comando("\b")
-                            contador_estabilidade = 0  # Reset imediato para detectar próximo backspace
+                            # Verifica se passou o delay desde o último backspace
+                            tempo_agora = time.time()
+                            if tempo_agora - ultimo_tempo_backspace >= DELAY_BACKSPACE:
+                                print("⌨️ COMANDO EXECUTADO: BACKSPACE")
+                                falador.processar_comando("\b")
+                                ultimo_tempo_backspace = tempo_agora  # Atualiza tempo
+                            contador_estabilidade = 0  # Reset imediato
                             letra_candidata = None
                     else:
                         # Quando sai da pose de backspace, reseta para permitir novo
