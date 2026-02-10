@@ -1,4 +1,4 @@
-# 🤟 LeituraMao - Reconhecedor de LIBRAS
+# LeituraMao - Reconhecedor de LIBRAS
 
 Sistema de reconhecimento de **LIBRAS** (Língua Brasileira de Sinais) em tempo real usando visão computacional e aprendizado de máquina.
 
@@ -468,7 +468,7 @@ Contribuições são bem-vindas! Para contribuir:
 
 ## 📜 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ---
 
@@ -508,6 +508,6 @@ Se você encontrar problemas ou tiver dúvidas:
 
 ---
 
-**Feito com ❤️ para promover acessibilidade e inclusão.**
+**Feito para promover acessibilidade e inclusão, além de estudo sobre software de captação de imagem e conversão de voz.**
 
-🤟 **LIBRAS é linguagem, não só gestos!** 🤟
+ **LIBRAS é língua, não só gestos!** 
