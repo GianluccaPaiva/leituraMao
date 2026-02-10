@@ -39,28 +39,44 @@ while True:
             if features:
                 letra_detectada, erro = libras.reconhecer(features)
 
-                # Prioridade 1: Comandos Especiais (ENTER / ESPAÇO)
+                # Prioridade 1: Comandos Especiais (ENTER / ESPAÇO / BACKSPACE) com estabilidade
                 if letra_detectada == "ENTER":
                     if erro < 0.15: # Limiar rigoroso para comandos
                         contador_estabilidade += 1
                         if contador_estabilidade >= 20: # Mais estável para não errar o comando
-                            print("⌨️ COMANDO EXECUTADO: ENTER")
-                            # Se quiser simular a tecla real: pyautogui.press('enter')
-                            contador_estabilidade = LIMITE_ESTABILIDADE # Reset para não repetir infinitamente
-                if letra_detectada == "ESPACO":
+                            if letra_detectada != ultima_letra_confirmada:  # Evita múltiplos ENTER
+                                print("⌨️ COMANDO EXECUTADO: ENTER")
+                                falador.processar_comando("ENTER")
+                                ultima_letra_confirmada = letra_detectada
+                            contador_estabilidade = 0
+                            letra_candidata = None
+                
+                elif letra_detectada == "ESPACO":
                     if erro < 0.15:
                         contador_estabilidade += 1
                         if contador_estabilidade >= 20:
-                            print("⌨️ COMANDO EXECUTADO: ESPAÇO")
-                            # pyautogui.press('space')
-                            contador_estabilidade = LIMITE_ESTABILIDADE
-                if letra_detectada =="\b":
+                            if letra_detectada != ultima_letra_confirmada:  # Evita múltiplos ESPAÇO
+                                print("⌨️ COMANDO EXECUTADO: ESPAÇO")
+                                falador.processar_comando("ESPACO")
+                                ultima_letra_confirmada = letra_detectada
+                            contador_estabilidade = 0
+                            letra_candidata = None
+                
+                elif letra_detectada == "\b":
                     if erro < 0.15:
                         contador_estabilidade += 1
                         if contador_estabilidade >= 20:
+                            # Para backspace, permite múltiplas vezes se sair e voltar da pose
                             print("⌨️ COMANDO EXECUTADO: BACKSPACE")
-                            # pyautogui.press('backspace')
-                            contador_estabilidade = LIMITE_ESTABILIDADE
+                            falador.processar_comando("\b")
+                            contador_estabilidade = 0  # Reset imediato para detectar próximo backspace
+                            letra_candidata = None
+                    else:
+                        # Quando sai da pose de backspace, reseta para permitir novo
+                        if letra_candidata == "\b":
+                            letra_candidata = None
+                            contador_estabilidade = 0
+                            ultima_letra_confirmada = ""  # Limpa para permitir novo backspace
                             
                 # Prioridade 2: Letras com Movimento (J e Z)
                 elif letra_detectada in ["I", "J"]:
