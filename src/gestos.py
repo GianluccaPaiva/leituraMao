@@ -50,3 +50,28 @@ class Gestos:
         p3 = self.historico_posicoes[-1]
         # Verifica a mudança de direção lateral (zig-zag)
         return abs(p1[0] - p2[0]) > 0.07 and abs(p2[0] - p3[0]) > 0.07
+
+    def detectar_desenho_l(self):
+        """Lógica facilitada para o movimento do L (mao-esquerda)."""
+        if len(self.historico_posicoes) < 8: return False
+        inicio = self.historico_posicoes[0]
+        fim = self.historico_posicoes[-1]
+        # Verifica se desceu no eixo Y e moveu-se no eixo X
+        return (fim[1] - inicio[1] > 0.10) and (abs(fim[0] - inicio[0]) > 0.05)
+    
+    def detectar_enter(self, features):
+        """
+        Detecta o gesto de 'positivo' (polegar levantado e outros fechados).
+        Valores de wrist baixos (~0.3-0.4) indicam dedos dobrados.
+        Valores de wrist altos (>0.5) indicam dedos esticados.
+        """
+        if not features: return False
+        
+        polegar_aberto = features["thumb_wrist"] > 0.5
+        indicador_fechado = features["index_wrist"] < 0.45
+        medio_fechado = features["middle_wrist"] < 0.45
+        anelar_fechado = features["ring_wrist"] < 0.45
+        mindinho_fechado = features["pinky_wrist"] < 0.45
+
+        return polegar_aberto and indicador_fechado and medio_fechado and \
+               anelar_fechado and mindinho_fechado

@@ -273,5 +273,38 @@
     "middle_wrist": 1.0,
     "ring_wrist": 0.715483905468433,
     "pinky_wrist": 0.7747133405128626
+  },
+  "ENTER": {
+    "thumb_index": 1.2428127693924804,
+    "index_middle": 0.32733719856678856,
+    "middle_ring": 0.3322752567947603,
+    "ring_pinky": 0.29548295177088485,
+    "thumb_wrist": 2.238401123239843,
+    "index_wrist": 1.2121406904321632,
+    "middle_wrist": 1.0,
+    "ring_wrist": 0.8255258593198633,
+    "pinky_wrist": 0.7792292206180699
+  },
+  "\b": {
+    "thumb_index": 0.596236776002209,
+    "index_middle": 0.40444974732101424,
+    "middle_ring": 0.34828573978730015,
+    "ring_pinky": 0.3490752560542486,
+    "thumb_wrist": 1.7254772023171308,
+    "index_wrist": 1.2487985094887024,
+    "middle_wrist": 1.0,
+    "ring_wrist": 0.8023023341677862,
+    "pinky_wrist": 0.7828695379683674
+  },
+  "ESPACO": {
+    "thumb_index": 0.9212578962260415,
+    "index_middle": 0.36215634739357416,
+    "middle_ring": 0.3706196767010087,
+    "ring_pinky": 0.33783052188039414,
+    "thumb_wrist": 1.983330886007781,
+    "index_wrist": 1.2348147530439613,
+    "middle_wrist": 1.0,
+    "ring_wrist": 0.8046964599358983,
+    "pinky_wrist": 0.7637168980910858
   }
 }

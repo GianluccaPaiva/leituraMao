@@ -36,6 +36,34 @@ while True:
             if features:
                 letra_detectada, erro = libras.reconhecer(features)
 
+                # Prioridade 1: Comandos Especiais (ENTER / ESPAÇO)
+                if letra_detectada == "ENTER":
+                    if erro < 0.15: # Limiar rigoroso para comandos
+                        contador_estabilidade += 1
+                        if contador_estabilidade >= 20: # Mais estável para não errar o comando
+                            print("⌨️ COMANDO EXECUTADO: ENTER")
+                            # Se quiser simular a tecla real: pyautogui.press('enter')
+                            contador_estabilidade = LIMITE_ESTABILIDADE # Reset para não repetir infinitamente
+                if letra_detectada == "ESPACO":
+                    if erro < 0.15:
+                        contador_estabilidade += 1
+                        if contador_estabilidade >= 20:
+                            print("⌨️ COMANDO EXECUTADO: ESPAÇO")
+                            # pyautogui.press('space')
+                            contador_estabilidade = LIMITE_ESTABILIDADE
+                if letra_detectada =="\b":
+                    if erro < 0.15:
+                        contador_estabilidade += 1
+                        if contador_estabilidade >= 20:
+                            print("⌨️ COMANDO EXECUTADO: BACKSPACE")
+                            # pyautogui.press('backspace')
+                            contador_estabilidade = LIMITE_ESTABILIDADE
+                            
+                # Prioridade 2: Letras com Movimento (J e Z)
+                elif letra_detectada in ["I", "J"]:
+                    gestos.rastrear_movimento(hand_landmarks.landmark[20])
+                    if gestos.detectar_desenho_j(): letra_detectada = "J"
+
                 # Prioridade: Se a pose base for I ou D, verifica movimento para J ou Z
                 if letra_detectada in ["I", "J"]:
                     gestos.rastrear_movimento(hand_landmarks.landmark[20]) # Mindinho
