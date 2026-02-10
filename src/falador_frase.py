@@ -61,6 +61,8 @@ class Falador:
         elif comando == "\b":
             if len(self.letras_da_frase) > 0:
                 self.letras_da_frase.pop()
+        elif comando == "\u0000":
+            self.letras_da_frase = []
         else:
             self.letras_da_frase.append(comando)
             
