@@ -4,15 +4,16 @@ import time
 from src.gestos import Gestos
 from src.libras import Libras
 
-# Configurações otimizadas para a tabela
-LIMITE_ESTABILIDADE = 12   # Equilíbrio entre velocidade e precisão
-LIMIAR_ERRO_ESTRITO = 0.18 # Ligeiramente mais permissivo para facilitar o uso
+# Configurações para eliminar "fantasmas"
+LIMITE_ESTABILIDADE = 12   # Frames necessários para confirmar a letra
+LIMIAR_ERRO_ESTRITO = 0.18 # Quão parecida a pose deve estar do JSON
 TEMPO_ENTRE_LETRAS = 1.0
 
+palabra = []
 gestos = Gestos()
 libras = Libras("dados/alfabeto.json")
 mp_mao = mp.solutions.hands
-detector = mp_mao.Hands(max_num_hands=1, min_detection_confidence=0.75)
+detector = mp_mao.Hands(max_num_hands=1, min_detection_confidence=0.75, min_tracking_confidence=0.75)
 desenho = mp.solutions.drawing_utils
 
 cap = cv2.VideoCapture(0)
@@ -35,15 +36,14 @@ while True:
             if features:
                 letra_detectada, erro = libras.reconhecer(features)
 
-                # Prioridade para Letras com Movimento (J e Z)
-                # J começa com pose de I, Z começa com pose de D
-                if letra_detectada == "I" or letra_detectada == "J":
+                # Prioridade: Se a pose base for I ou D, verifica movimento para J ou Z
+                if letra_detectada in ["I", "J"]:
                     gestos.rastrear_movimento(hand_landmarks.landmark[20]) # Mindinho
                     if gestos.detectar_desenho_j(): 
                         letra_detectada = "J"
-                        contador_estabilidade = LIMITE_ESTABILIDADE # Força detecção rápida
+                        contador_estabilidade = LIMITE_ESTABILIDADE # Confirmação imediata
                 
-                elif letra_detectada == "D" or letra_detectada == "Z":
+                elif letra_detectada in ["D", "Z"]:
                     gestos.rastrear_movimento(hand_landmarks.landmark[8]) # Indicador
                     if gestos.detectar_desenho_z(): 
                         letra_detectada = "Z"
@@ -51,7 +51,7 @@ while True:
                 else:
                     gestos.limpar_historico()
 
-                # Filtro de Estabilidade
+                # Filtro de Estabilidade (Anti-Fantasma)
                 if erro < LIMIAR_ERRO_ESTRITO:
                     if letra_detectada == letra_candidata:
                         contador_estabilidade += 1
@@ -61,12 +61,15 @@ while True:
 
                     if contador_estabilidade >= LIMITE_ESTABILIDADE:
                         if letra_detectada != ultima_letra_confirmada:
-                            print(f"✅ LETRA: {letra_detectada}")
+                            print(f"✅ CONFIRMADA: {letra_detectada}")
+                            palabra.append(letra_detectada)
+                            time.sleep(TEMPO_ENTRE_LETRAS)
                             ultima_letra_confirmada = letra_detectada
                 else:
                     contador_estabilidade = 0
+                    letra_candidata = None
 
-    cv2.imshow("Reconhecimento Otimizado LIBRAS", frame)
+    cv2.imshow("Sistema LIBRAS - Estabilidade e Movimento", frame)
     if cv2.waitKey(1) & 0xFF == ord("q"): break
 
 cap.release()
