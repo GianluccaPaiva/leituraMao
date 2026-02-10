@@ -3,6 +3,7 @@ import mediapipe as mp
 import time
 from src.gestos import Gestos
 from src.libras import Libras
+from src.falador_frase import Falador
 
 # Configurações para eliminar "fantasmas"
 LIMITE_ESTABILIDADE = 12   # Frames necessários para confirmar a letra
@@ -20,6 +21,8 @@ cap = cv2.VideoCapture(0)
 letra_candidata = None
 contador_estabilidade = 0
 ultima_letra_confirmada = ""
+
+falador = Falador(libras.ref)
 
 while True:
     ok, frame = cap.read()
@@ -88,10 +91,19 @@ while True:
                         contador_estabilidade = 0
 
                     if contador_estabilidade >= LIMITE_ESTABILIDADE:
-                        if letra_detectada != ultima_letra_confirmada:
-                            print(f"✅ CONFIRMADA: {letra_detectada}")
-                            palabra.append(letra_detectada)
-                            time.sleep(TEMPO_ENTRE_LETRAS)
+                        # Se detectou ENTER, processa idependente da última letra ser ENTER
+                        if letra_detectada == "ENTER":
+                            resultado = falador.processar_comando("ENTER")
+                            print("✅ Frase falada e zerada.")
+                            # IMPORTANTE: Resetar para permitir novo ENTER em seguida
+                            ultima_letra_confirmada = "" 
+                            contador_estabilidade = 0 
+                            letra_candidata = None
+                        
+                        # Lógica normal para as outras letras
+                        elif letra_detectada != ultima_letra_confirmada:
+                            resultado = falador.processar_comando(letra_detectada)
+                            print(f"📝 Frase: {resultado}")
                             ultima_letra_confirmada = letra_detectada
                 else:
                     contador_estabilidade = 0
