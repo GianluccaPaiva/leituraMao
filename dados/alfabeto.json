@@ -262,5 +262,16 @@
     "middle_wrist": 1.0,
     "ring_wrist": 0.9695126435851307,
     "pinky_wrist": 1.8164478907746018
+  },
+  "Z": {
+    "thumb_index": 1.0851608514392312,
+    "index_middle": 1.42266151272451,
+    "middle_ring": 0.343146148144848,
+    "ring_pinky": 0.1978347835341119,
+    "thumb_wrist": 1.3646964065582416,
+    "index_wrist": 2.3775373644201063,
+    "middle_wrist": 1.0,
+    "ring_wrist": 0.715483905468433,
+    "pinky_wrist": 0.7747133405128626
   }
 }

@@ -5,7 +5,7 @@ from src.mao import distancia, tamanho_mao
 class Gestos:
     def __init__(self):
         self.historico_posicoes = []
-        self.limite_historico = 15
+        self.limite_historico = 15 # Aumentado para dar mais tempo ao desenho
         
     def extrair_features(self, landmarks):
         t = tamanho_mao(landmarks)
@@ -32,16 +32,18 @@ class Gestos:
         self.historico_posicoes = []
 
     def detectar_desenho_j(self):
-        if len(self.historico_posicoes) < 12: return False
+        """Detecção facilitada do J: curva lateral e descida."""
+        if len(self.historico_posicoes) < 8: return False # Menos frames necessários
         inicio = self.historico_posicoes[0]
         fim = self.historico_posicoes[-1]
-        # J: Desce bastante e curva lateralmente
-        return (fim[1] - inicio[1] > 0.15) and (abs(fim[0] - inicio[0]) > 0.08)
+        # Valores reduzidos (0.10 e 0.05) para maior facilidade
+        return (fim[1] - inicio[1] > 0.10) and (abs(fim[0] - inicio[0]) > 0.05)
 
     def detectar_desenho_z(self):
-        if len(self.historico_posicoes) < 15: return False
+        """Detecção facilitada do Z: movimento em zig-zag."""
+        if len(self.historico_posicoes) < 10: return False
         p1 = self.historico_posicoes[0]
         p2 = self.historico_posicoes[len(self.historico_posicoes)//2]
         p3 = self.historico_posicoes[-1]
-        # Z: Movimento em zig-zag (X vai e volta)
-        return abs(p1[0] - p2[0]) > 0.1 and abs(p2[0] - p3[0]) > 0.1
+        # Z: Movimento lateral de ida e volta facilitado (0.07)
+        return abs(p1[0] - p2[0]) > 0.07 and abs(p2[0] - p3[0]) > 0.07
