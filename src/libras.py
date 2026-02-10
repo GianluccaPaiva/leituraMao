@@ -6,8 +6,9 @@ class Libras:
             self.ref = json.load(f)
 
     def erro(self, a, b):
-        return sum(abs(a[k] - b[k]) for k in a)
-
+    # Soma dos quadrados das diferenças (mais preciso que a soma simples)
+        return sum((a[k] - b[k]) ** 2 for k in a if k in b)
+    
     def reconhecer(self, features):
         melhor = None
         menor = float("inf")
