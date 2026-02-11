@@ -139,13 +139,15 @@ Use este modo para **treinar** o sistema a reconhecer SEU estilo de sinal.
 4. Faça o sinal da letra desejada
 5. Pressione a **tecla correspondente** (A-Z) no teclado
 6. Uma mensagem confirmará: `✅ Letra X calibrada e salva!`
-7. Pressione **ESC** para sair
+7. A letra aparecerá no **painel visual** no topo da câmera
+8. Pressione **ESC** para sair
 
 **Dicas para boa calibração:**
 - Iluminação uniforme e clara
 - Fundo neutro (sem muita movimentação)
 - Mão bem visível e estável
 - Distância de ~50cm da câmera
+- Acompanhe o painel de "Calibradas" para saber quais letras já foram treinadas
 
 ### 🎯 Modo de Reconhecimento
 
@@ -155,15 +157,18 @@ Use este modo para **converter LIBRAS em texto e voz**.
 2. Posicione sua mão em frente à câmera
 3. Faça os sinais das letras (mantenha por ~1 segundo)
 4. A letra aparecerá na tela quando **estabilizada**
-5. Para **falar** a frase:
+5. As letras reconhecidas aparecem em um **painel visual** no topo
+6. Para **limpar a frase**, pressione **C** no teclado
+7. Para **falar** a frase:
    - Faça o gesto configurado como "ENTER"
    - O sistema sintetizará voz e limpará a frase
-6. Pressione **Q** no teclado para sair
+8. Pressione **Q** no teclado para sair
 
 **Comandos durante o reconhecimento:**
 - **ENTER**: Fala e limpa a frase
 - **ESPAÇO**: Adiciona espaço
 - **BACKSPACE**: Remove última letra (delay de 0.5s)
+- **C**: Limpa a frase acumulada
 
 ---
 
