@@ -187,6 +187,7 @@ while True:
     # Exibe frame e verifica tecla
     tecla = camera.exibir_frame("Sistema LIBRAS - Estabilidade e Movimento")
     if tecla == 27:  # ESC
+        camera.fechar()
         runpy.run_module("main", run_name="__main__")
 
 # Fecha recursos
