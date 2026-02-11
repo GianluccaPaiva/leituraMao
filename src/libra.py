@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import time
+import json
 from src.gestos import Gestos
 from src.libras import Libras
 from src.falador_frase import Falador
@@ -10,11 +11,14 @@ LIMITE_ESTABILIDADE = 12   # Frames necessários para confirmar a letra
 LIMIAR_ERRO_ESTRITO = 0.18 # Quão parecida a pose deve estar do JSON
 TEMPO_ENTRE_LETRAS = 1.0
 
+with open("dados/config.json") as f:
+    config = json.load(f)
+
 palabra = []
 gestos = Gestos()
 libras = Libras("dados/alfabeto.json")
 mp_mao = mp.solutions.hands
-detector = mp_mao.Hands(max_num_hands=1, min_detection_confidence=0.75, min_tracking_confidence=0.75)
+detector = mp_mao.Hands(**config["mediapipe"])
 desenho = mp.solutions.drawing_utils
 
 cap = cv2.VideoCapture(0)

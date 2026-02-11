@@ -1,12 +1,16 @@
 import cv2
 import mediapipe as mp
 import time
+import json
 
 from gestos import extrair_features
 from libras import Libras
 
+with open("dados/config.json") as f:
+    config = json.load(f)
+
 mp_mao = mp.solutions.hands
-detector = mp_mao.Hands(max_num_hands=1)
+detector = mp_mao.Hands(**config["mediapipe"])
 desenho = mp.solutions.drawing_utils
 
 libras = Libras()
@@ -26,7 +30,7 @@ while True:
     res = detector.process(rgb)
 
     if res.multi_hand_landmarks:
-        for hand in res.multi_hand_landmarks:
+        for idx, hand in enumerate(res.multi_hand_landmarks):
             desenho.draw_landmarks(frame, hand, mp_mao.HAND_CONNECTIONS)
 
             features = extrair_features(hand.landmark)
@@ -36,14 +40,16 @@ while True:
                 if erro < 0.35:
                     agora = time.time()
                     if letra != ultima or agora - tempo > 1:
-                        print("Letra:", letra)
+                        print(f"Mão {idx}: Letra: {letra}")
                         ultima = letra
                         tempo = agora
 
+                    # Posiciona cada mão em uma posição diferente
+                    pos_x = 40 + (idx * 200)
                     cv2.putText(
                         frame,
                         letra,
-                        (40, 80),
+                        (pos_x, 80),
                         cv2.FONT_HERSHEY_SIMPLEX,
                         2,
                         (0, 255, 0),

@@ -1,5 +1,6 @@
 import mediapipe as mp
 import math
+import json
 
 # =========================
 # FUNÇÕES MATEMÁTICAS (PURO)
@@ -21,12 +22,10 @@ def tamanho_mao(landmarks):
 # =========================
 class DetectorMao:
     def __init__(self):
+        with open("dados/config.json") as f:
+            config = json.load(f)
         self.modulo_mao = mp.solutions.hands
-        self.detector = self.modulo_mao.Hands(
-            max_num_hands=1,
-            min_detection_confidence=0.7,
-            min_tracking_confidence=0.7
-        )
+        self.detector = self.modulo_mao.Hands(**config["mediapipe"])
         self.desenho = mp.solutions.drawing_utils
 
     def processar(self, frame_rgb):
