@@ -7,12 +7,15 @@ from src.libras import Libras
 from src.falador_frase import Falador
 
 # Configurações para eliminar "fantasmas"
-LIMITE_ESTABILIDADE = 12   # Frames necessários para confirmar a letra
-LIMIAR_ERRO_ESTRITO = 0.18 # Quão parecida a pose deve estar do JSON
-TEMPO_ENTRE_LETRAS = 1.0
-
 with open("dados/config.json") as f:
     config = json.load(f)
+
+cfg_libras = config["libras"]
+LIMITE_ESTABILIDADE = cfg_libras["limite_estabilidade"]
+LIMIAR_ERRO_ESTRITO = cfg_libras["limiar_erro_estrito"]
+LIMIAR_MOVIMENTO_MAO = cfg_libras["limiar_movimento_mao"]
+TEMPO_ENTRE_LETRAS = cfg_libras["tempo_entre_letras"]
+DELAY_BACKSPACE = cfg_libras["delay_backspace"]
 
 palabra = []
 gestos = Gestos()
@@ -26,9 +29,20 @@ letra_candidata = None
 contador_estabilidade = 0
 ultima_letra_confirmada = ""
 ultimo_tempo_backspace = 0  # Controla delay do backspace
-DELAY_BACKSPACE = 1.0  # Delay em segundos (permite fazer múltiplos com intervalo)
+posicao_mao_anterior = None  # Rastreia posição anterior da mão para detectar movimento
 
 falador = Falador(libras.ref)
+
+def calcular_distancia_euclidiana(p1, p2):
+    """Calcula distância euclidiana entre dois pontos"""
+    return ((p1.x - p2.x)**2 + (p1.y - p2.y)**2 + (p1.z - p2.z)**2)**0.5
+
+def detectar_movimento_mao(landmark_atual, landmark_anterior, limiar=LIMIAR_MOVIMENTO_MAO):
+    """Detecta se a mão se moveu além do limiar"""
+    if landmark_anterior is None:
+        return False
+    distancia = calcular_distancia_euclidiana(landmark_atual, landmark_anterior)
+    return distancia > limiar
 
 while True:
     ok, frame = cap.read()
@@ -41,6 +55,11 @@ while True:
         for hand_landmarks in resultados.multi_hand_landmarks:
             desenho.draw_landmarks(frame, hand_landmarks, mp_mao.HAND_CONNECTIONS)
             features = gestos.extrair_features(hand_landmarks.landmark)
+            
+            # Rastreia posição do pulso (landmark 0) para detectar movimento
+            pulso_atual = hand_landmarks.landmark[0]
+            movimento_detectado = detectar_movimento_mao(pulso_atual, posicao_mao_anterior)
+            posicao_mao_anterior = pulso_atual
 
             if features:
                 letra_detectada, erro = libras.reconhecer(features)
@@ -125,11 +144,13 @@ while True:
                             contador_estabilidade = 0 
                             letra_candidata = None
                         
-                        # Lógica normal para as outras letras
-                        elif letra_detectada != ultima_letra_confirmada:
+                        # Lógica normal para as outras letras: aceita nova letra se for diferente
+                        # OU se for IGUAL mas houve movimento significativo da mão
+                        elif letra_detectada != ultima_letra_confirmada or (letra_detectada == ultima_letra_confirmada and movimento_detectado):
                             resultado = falador.processar_comando(letra_detectada)
                             print(f"📝 Frase: {resultado}")
                             ultima_letra_confirmada = letra_detectada
+                            posicao_mao_anterior = None  # Reseta posição para próximo movimento
                 else:
                     contador_estabilidade = 0
                     letra_candidata = None

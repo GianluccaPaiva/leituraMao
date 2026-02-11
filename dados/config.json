@@ -4,5 +4,12 @@
     "min_detection_confidence": 0.3,
     "min_tracking_confidence": 0.3,
     "static_image_mode": false
+  },
+  "libras": {
+    "limite_estabilidade": 12,
+    "limiar_erro_estrito": 0.18,
+    "limiar_movimento_mao": 0.05,
+    "tempo_entre_letras": 1.0,
+    "delay_backspace": 1.0
   }
 }
