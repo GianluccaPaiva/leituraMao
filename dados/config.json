@@ -1,15 +1,24 @@
 {
   "mediapipe": {
     "max_num_hands": 2,
-    "min_detection_confidence": 0.3,
-    "min_tracking_confidence": 0.3,
+    "min_detection_confidence": 0.6,
+    "min_tracking_confidence": 0.6,
     "static_image_mode": false
   },
   "libras": {
-    "limite_estabilidade": 12,
-    "limiar_erro_estrito": 0.18,
-    "limiar_movimento_mao": 0.05,
+    "limite_estabilidade": 18,
+    "limiar_erro_estrito": 0.16,
+    "limiar_movimento_mao": 0.07,
     "tempo_entre_letras": 1.0,
-    "delay_backspace": 1.0
+    "delay_backspace": 1.2,
+    "limiar_erro_comando": 0.12,
+    "limiar_movimento_minimo": 0.08,
+    "frames_confirmacao_comando": 25
+  },
+  "validacao_dedos": {
+    "limiar_dedos_juntos": 0.18,
+    "limiar_dedos_afastados": 0.20,
+    "letras_dedos_juntos": ["B", "D", "F", "G", "P", "Q"],
+    "letras_dedos_afastados": ["V", "W", "Y"]
   }
 }

@@ -1,3 +1,4 @@
+import runpy
 import cv2
 import json
 import os
@@ -42,7 +43,7 @@ while cap.isOpened():
             if key == 27: # ESC
                 cap.release()
                 cv2.destroyAllWindows()
-                exit()
+                runpy.run_module("main", run_name="__main__")
             elif key != 255: # Qualquer outra tecla
                 if key == 32:
                     nome_sinal = "ESPACO"

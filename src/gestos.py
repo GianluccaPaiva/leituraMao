@@ -2,10 +2,19 @@ import math
 from src.mao import distancia, tamanho_mao
 
 class Gestos:
-    def __init__(self):
+    def __init__(self, config_validacao=None):
         # Buffer para armazenar a trajetória dos dedos (sequência de frames)
         self.historico_posicoes = []
         self.limite_historico = 15 
+        
+        # Configurações de validação de espaçamento entre dedos
+        if config_validacao is None:
+            config_validacao = {}
+        
+        self.limiar_dedos_juntos = config_validacao.get("limiar_dedos_juntos", 0.18)
+        self.limiar_dedos_afastados = config_validacao.get("limiar_dedos_afastados", 0.20)
+        self.letras_dedos_juntos = config_validacao.get("letras_dedos_juntos", ["B", "D", "F", "G", "P", "Q"])
+        self.letras_dedos_afastados = config_validacao.get("letras_dedos_afastados", ["V", "W", "Y"])
         
     def extrair_features(self, landmarks):
         t = tamanho_mao(landmarks)
@@ -23,6 +32,32 @@ class Gestos:
             "ring_wrist": distancia(landmarks[16], landmarks[0]) / t,
             "pinky_wrist": distancia(landmarks[20], landmarks[0]) / t
         }
+    
+    def validar_espacamento_dedos(self, features, letra_detectada):
+        """
+        Valida se a letra detectada tem características de espaçamento coerentes
+        Letras com dedos juntos (B): index_middle, middle_ring, ring_pinky devem ser pequenos
+        Letras com dedos afastados (V): essas distâncias devem ser maiores
+        Retorna True se a validação passar ou False se for incoerente
+        """
+        # Calcula distância média entre dedos consecutivos
+        distancia_media_dedos = (
+            features["index_middle"] + 
+            features["middle_ring"] + 
+            features["ring_pinky"]
+        ) / 3
+        
+        # Validação para letras com dedos juntos
+        if letra_detectada in self.letras_dedos_juntos:
+            if distancia_media_dedos > self.limiar_dedos_juntos:  # Dedos abertos demais
+                return False
+        
+        # Validação para letras com dedos afastados
+        elif letra_detectada in self.letras_dedos_afastados:
+            if distancia_media_dedos < self.limiar_dedos_afastados:  # Dedos fechados demais
+                return False
+        
+        return True
 
     def rastrear_movimento(self, ponto):
         """Adiciona a posição atual do dedo ao histórico de frames."""

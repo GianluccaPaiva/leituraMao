@@ -12,11 +12,14 @@ if __name__ == "__main__":
     print("Escolha uma opção:")
     print("1. Calibrar (Adicionar/Atualizar letras)")
     print("2. Iniciar reconhecimento")
-    escolha = input("Digite 1 ou 2: ").strip()
+    print("3. Sair")
+    escolha = input("Digite 1, 2 ou 3: ").strip()
 
     if escolha == "1":
         executar_calibracao()
     elif escolha == "2":
         executar_reconhecimento()
+    elif escolha =="3":
+        exit()
     else:
         print("Opção inválida. Encerrando.")
