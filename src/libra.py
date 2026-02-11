@@ -183,6 +183,24 @@ while True:
             else:
                 contador_estabilidade = 0
                 letra_candidata = None
+                
+
+    # 1. Obter a frase atual que está sendo construída
+    frase_atual = falador.formarFrase()
+
+    # 2. Desenhar um fundo (retângulo) para melhorar a legibilidade
+    cv2.rectangle(camera.frame, (10, 10), (630, 60), (0, 0, 0), -1)
+
+    # 3. Escrever o texto da frase no frame da câmera
+    cv2.putText(
+        camera.frame, 
+        f"Frase: {frase_atual}", 
+        (20, 45), 
+        cv2.FONT_HERSHEY_SIMPLEX, 
+        1, 
+        (255, 255, 255), 
+        2
+    )
 
     # Exibe frame e verifica tecla
     tecla = camera.exibir_frame("Sistema LIBRAS - Estabilidade e Movimento")
